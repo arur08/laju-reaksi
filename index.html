@@ -96,17 +96,23 @@
   .page.active { display: block; }
 
   /* ===== PAGE 1 LANDING ===== */
+  #page-1 {
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
   #page-landing {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     text-align: center;
-    padding: 70px 20px 40px;
-    min-height: 100vh;
+    padding: 70px 20px 60px;
+    width: 100%;
+    max-width: 780px;
+    margin: 0 auto;
   }
-
-  #page-landing.active { display: flex; }
 
   .badge {
     display: inline-flex;
@@ -1133,6 +1139,21 @@
   .mol-atom.O { background: rgba(255,71,87,0.2); border-color: var(--red); color: var(--red); }
   .mol-atom.N { background: rgba(0,230,118,0.2); border-color: var(--green); color: var(--green); }
 
+  .nav-btn.nav-profil-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 14px 5px 5px;
+  }
+
+  .nav-btn.nav-profil-btn img {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid rgba(0,212,255,0.5);
+    background: var(--navy2);
+  }
+
   /* ===== BOTTOM NAV ===== */
   .bottom-nav {
     position: fixed;
@@ -1391,7 +1412,10 @@
 <nav>
   <div class="nav-logo">⚗ Laju Reaksi Lab</div>
   <div class="nav-links">
-    <button class="nav-btn" onclick="openAbout()">Tentang</button>
+    <button class="nav-btn nav-profil-btn" onclick="openAbout()">
+      <img id="nav-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='15' r='9' fill='%2300d4ff55'/%3E%3Cellipse cx='20' cy='38' rx='14' ry='10' fill='%2300d4ff33'/%3E%3C/svg%3E" alt="avatar">
+      Profil
+    </button>
   </div>
 </nav>
 
@@ -1405,7 +1429,6 @@
     <p class="hero-sub">Jelajahi dunia kimia melalui <span>simulasi interaktif</span>, analisis grafik real-time, dan eksperimen virtual berbasis inkuiri terbimbing.</p>
     <div>
       <button class="btn-primary" onclick="goPage(2)">🔬 Mulai Belajar</button>
-      <button class="btn-secondary" onclick="goPage(2)">Tentang</button>
     </div>
     <div class="feature-chips">
       <div class="chip"><span>🎯</span>14 Modul Interaktif</div>
@@ -1927,8 +1950,11 @@
 
     <div class="profile-photo-wrap">
       <div class="profile-photo-ring" onclick="document.getElementById('photo-input').click()">
-        <img id="profile-img" src="FOTO.jpg" alt="Foto Profil">
+             <img id="profile-img" src="FOTO.jpg" alt="Foto Profil">
         </div>
+      </div>
+      <input type="file" id="photo-input" accept="image/png,image/jpeg,image/jpg" onchange="loadPhoto(event)">
+      <div class="photo-hint">Klik foto untuk mengunggah foto PNG/JPG kamu</div>
     </div>
 
     <table class="profile-info-table">
@@ -1994,6 +2020,7 @@ function loadPhoto(e) {
   const reader = new FileReader();
   reader.onload = function(ev) {
     document.getElementById('profile-img').src = ev.target.result;
+    document.getElementById('nav-avatar').src = ev.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -2083,7 +2110,10 @@ function goPage(n) {
   if (old) { old.classList.remove('active'); old.style.display = 'none'; }
   currentPage = n;
   const pg = document.getElementById('page-' + currentPage);
-  if (pg) { pg.classList.add('active'); pg.style.display = 'block'; }
+  if (pg) {
+    pg.classList.add('active');
+    pg.style.display = n === 1 ? 'flex' : 'block';
+  }
   updateNav();
   updateProgress();
   onPageEnter(n);
@@ -2913,13 +2943,14 @@ function renderDashboard() {
 }
 
 // ===== INIT =====
+// Sembunyikan semua halaman dulu
+for (let i = 1; i <= 14; i++) {
+  const p = document.getElementById('page-' + i);
+  if (p) p.style.display = 'none';
+}
+currentPage = 0;
 goPage(1);
-document.getElementById('page-1').style.display = 'flex';
-document.getElementById('page-1').classList.add('active');
 updateProgress();
 </script>
 </body>
-
 </html>
-
-
